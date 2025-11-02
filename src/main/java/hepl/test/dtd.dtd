@@ -1,0 +1,44 @@
+<!ELEMENT dataset (record+)>
+        <!ATTLIST dataset
+                source CDATA #REQUIRED>
+
+        <!ELEMENT record (Col0, ImageID, ImageDir, StudyDate_DICOM, StudyID, PatientID, PatientBirth, PatientSex_DICOM, ViewPosition_DICOM, Projection, MethodProjection, Pediatric, Modality_DICOM, Manufacturer_DICOM, PhotometricInterpretation_DICOM, PixelRepresentation_DICOM, PixelAspectRatio_DICOM, SpatialResolution_DICOM, BitsStored_DICOM, WindowCenter_DICOM, WindowWidth_DICOM, Rows_DICOM, Columns_DICOM, XRayTubeCurrent_DICOM, Exposure_DICOM, ExposureInuAs_DICOM, ExposureTime, RelativeXRayExposure_DICOM, ReportID, Report, MethodLabel, Labels, Localizations, LabelsLocalizationsBySentence, labelCUIS, LocalizationsCUIS)>
+        <!ATTLIST record
+                id CDATA #REQUIRED>
+
+        <!ELEMENT Col0 (#PCDATA)>
+        <!ELEMENT ImageID (#PCDATA)>
+        <!ELEMENT ImageDir (#PCDATA)>
+        <!ELEMENT StudyDate_DICOM (#PCDATA)>
+        <!ELEMENT StudyID (#PCDATA)>
+        <!ELEMENT PatientID (#PCDATA)>
+        <!ELEMENT PatientBirth (#PCDATA)>
+        <!ELEMENT PatientSex_DICOM (#PCDATA)>
+        <!ELEMENT ViewPosition_DICOM (#PCDATA)>
+        <!ELEMENT Projection (#PCDATA)>
+        <!ELEMENT MethodProjection (#PCDATA)>
+        <!ELEMENT Pediatric (#PCDATA)>
+        <!ELEMENT Modality_DICOM (#PCDATA)>
+        <!ELEMENT Manufacturer_DICOM (#PCDATA)>
+        <!ELEMENT PhotometricInterpretation_DICOM (#PCDATA)>
+        <!ELEMENT PixelRepresentation_DICOM (#PCDATA)>
+        <!ELEMENT PixelAspectRatio_DICOM (#PCDATA)>
+        <!ELEMENT SpatialResolution_DICOM (#PCDATA)>
+        <!ELEMENT BitsStored_DICOM (#PCDATA)>
+        <!ELEMENT WindowCenter_DICOM (#PCDATA)>
+        <!ELEMENT WindowWidth_DICOM (#PCDATA)>
+        <!ELEMENT Rows_DICOM (#PCDATA)>
+        <!ELEMENT Columns_DICOM (#PCDATA)>
+        <!ELEMENT XRayTubeCurrent_DICOM (#PCDATA)>
+        <!ELEMENT Exposure_DICOM (#PCDATA)>
+        <!ELEMENT ExposureInuAs_DICOM (#PCDATA)>
+        <!ELEMENT ExposureTime (#PCDATA)>
+        <!ELEMENT RelativeXRayExposure_DICOM (#PCDATA)>
+        <!ELEMENT ReportID (#PCDATA)>
+        <!ELEMENT Report (#PCDATA)>
+        <!ELEMENT MethodLabel (#PCDATA)>
+        <!ELEMENT Labels (#PCDATA)>
+        <!ELEMENT Localizations (#PCDATA)>
+        <!ELEMENT LabelsLocalizationsBySentence (#PCDATA)>
+        <!ELEMENT labelCUIS (#PCDATA)>
+        <!ELEMENT LocalizationsCUIS (#PCDATA)>

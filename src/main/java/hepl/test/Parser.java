@@ -49,25 +49,30 @@ public class Parser {
     private static void writeXml(String filename, List<String[]> data) throws IOException {
         try (FileWriter writer = new FileWriter(filename)) {
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-            writer.write("<dataset source=\"csv\">\n"); // attribut 'source' ajouté
+            writer.write("<!DOCTYPE dataset SYSTEM \"dataset.dtd\">\n");
+            writer.write("<dataset source=\"csv\">\n"); // élément racine debut
 
             if (!data.isEmpty()) {
                 String[] headers = data.get(0); // première ligne = entêtes
                 for (int i = 1; i < data.size(); i++) {
                     String[] row = data.get(i);
-                    writer.write("  <record id=\"" + i + "\">\n"); // attribut 'id'
+                    writer.write("  <record id=\"" + i + "\">\n"); //record debut contients des attribut id =1 , id=2, ...
 
                     for (int j = 0; j < headers.length; j++) {
                         String colName = headers[j].trim();
+
+                        if (colName.isEmpty()) {
+                            colName = "Col0";
+                        }
                         String value = j < row.length ? row[j] : "";
                         writer.write("    <" + colName + ">" + xmlEscape(value) + "</" + colName + ">\n");
                     }
 
-                    writer.write("  </record>\n");
+                    writer.write("  </record>\n"); //fin record
                 }
             }
 
-            writer.write("</dataset>\n");
+            writer.write("</dataset>\n"); //élément racine fin
         }
     }
 }
