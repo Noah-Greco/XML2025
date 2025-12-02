@@ -1,0 +1,39 @@
+
+<!ELEMENT dataset (record+)>
+        <!ATTLIST dataset
+                source CDATA #REQUIRED>
+<!ELEMENT record (Image ,StudyID,Patient,Projection,Pediatric,MethodProjection,Report,Label,Localizations )
+
+        <!ELEMENT  Image ANY >  <!-- N'importe quelle élément de type Image-->
+        <!ATTLIST Image
+            ImageID CDATA #REQUIRED
+            ImageDir CDATA #REQUIRED>
+
+        <!ELEMENT StudyID (#PCDATA)>
+
+        <!ELEMENT Patient ANY >
+        <!ATTLIST Patient
+         PatientID CDATA #REQUIRED
+         PatientBirth CDATA #REQUIRED>
+
+        <!ELEMENT Projection (#PCDATA)>
+        <!ELEMENT Pediatric (#PCDATA)>
+        <!ELEMENT MethodProjection (#PCDATA)>
+
+        <!ELEMENT Report ANY>
+        <!ATTLIST Report
+         ReportID CDATA #REQUIRED
+         Report CDATA>
+
+        <!ELEMENT Label ANY >
+        <!ATTLIST Label
+         MethodLabel CDATA
+         Labels CDATA #REQUIRED
+         LabelsLocalizationsBySentence CDATA
+         labelCUIS CDATA>
+
+        <!ELEMENT Localizations ANY>
+        <!ATTLIST Localizations
+         LocalizationsCUIS (#PCDATA)>
+         Localizations (#PCDATA)>
+

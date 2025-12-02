@@ -49,7 +49,7 @@ public class Parser {
     private static void writeXml(String filename, List<String[]> data) throws IOException {
         try (FileWriter writer = new FileWriter(filename)) {
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-            writer.write("<!DOCTYPE dataset SYSTEM \"dataset.dtd\">\n");
+            writer.write("<!DOCTYPE dataset SYSTEM \"dtd.dtd\">\n");
             writer.write("<dataset source=\"csv\">\n"); // élément racine debut
 
             if (!data.isEmpty()) {
