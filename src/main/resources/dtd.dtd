@@ -2,39 +2,42 @@
         <!ATTLIST dataset
                 source CDATA #REQUIRED>
 
-        <!ELEMENT record (Image, StudyID, Patient, Projection, Pediatric, MethodProjection, Report, Label, Localizations)>
+        <!ELEMENT record (Image ,StudyID,Patient,Projection,Pediatric,MethodProjection,Report,Label,Localizations)>
         <!ATTLIST record
-                id CDATA #IMPLIED>
+                id CDATA #REQUIRED>
 
-
-        <!ELEMENT Image ANY>
+        <!ELEMENT Image EMPTY>
         <!ATTLIST Image
-                ImageID  CDATA #REQUIRED
+                ImageID CDATA #REQUIRED
                 ImageDir CDATA #REQUIRED>
 
         <!ELEMENT StudyID (#PCDATA)>
 
-        <!ELEMENT Patient ANY>
+        <!ELEMENT Patient ANY >
         <!ATTLIST Patient
-                PatientID    CDATA #REQUIRED
+                PatientID CDATA #REQUIRED
                 PatientBirth CDATA #REQUIRED>
 
         <!ELEMENT Projection (#PCDATA)>
         <!ELEMENT Pediatric (#PCDATA)>
         <!ELEMENT MethodProjection (#PCDATA)>
 
-        <!ELEMENT Report ANY>
+        <!ELEMENT Report (#PCDATA)>
         <!ATTLIST Report
                 ReportID CDATA #REQUIRED
                 Report   CDATA #IMPLIED>
 
-        <!ELEMENT Label ANY>
+        <!ELEMENT Label (LabelItem*)>
         <!ATTLIST Label
-                MethodLabel                   CDATA #IMPLIED
-                Labels                        CDATA #REQUIRED
+                MethodLabel CDATA #IMPLIED
+                Labels CDATA #REQUIRED
                 LabelsLocalizationsBySentence CDATA #IMPLIED
-                labelCUIS                     CDATA #IMPLIED>
+                labelCUIS CDATA #IMPLIED>
 
-        <!ELEMENT Localizations (#PCDATA)>
+        <!ELEMENT LabelItem (#PCDATA)>
+
+        <!ELEMENT Localizations (LocItem*)>
         <!ATTLIST Localizations
                 LocalizationsCUIS CDATA #IMPLIED>
+
+        <!ELEMENT LocItem (#PCDATA)>

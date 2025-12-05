@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class  XmlMaker {
+public class XmlMaker {
 
     public static void main(String[] args) {
         // Chemin vers ton CSV
@@ -64,10 +64,30 @@ public class  XmlMaker {
         return row[idx];
     }
 
+    // Découpe une chaîne de type ['a', 'b', 'c'] en morceaux individuels
+    private static String[] splitList(String raw) {
+        if (raw == null) return new String[0];
+
+        // On enlève les crochets
+        String cleaned = raw.replace("[", "").replace("]", "").trim();
+        if (cleaned.isEmpty()) return new String[0];
+
+        // On découpe sur les virgules
+        String[] parts = cleaned.split(",");
+
+        // On trim chaque élément
+        for (int i = 0; i < parts.length; i++) {
+            parts[i] = parts[i].trim();
+        }
+
+        return parts;
+    }
+
     // Écriture du XML structuré selon le DTD
     private static void writeXml(String filename, List<String[]> data) throws IOException {
         try (FileWriter writer = new FileWriter(filename)) {
             writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            writer.write("<?xml-stylesheet type=\"text/xsl\" href=\"xslt.xslt\"?>\n");
             writer.write("<!DOCTYPE dataset SYSTEM \"dtd.dtd\">\n");
             writer.write("<dataset source=\"csv\">\n");
 
@@ -114,14 +134,11 @@ public class  XmlMaker {
                     String localizations  = getCell(row, idxLocalizations);
                     String localizationsCUIS = getCell(row, idxLocalizationsCUIS);
 
-                    // 3) On génère un record qui respecte exactement le DTD
-                    // Remarque: ton DTD ne déclare pas l'attribut id pour record.
-                    // Donc ici, je ne le mets pas pour éviter "Attribute 'id' must be declared".
+                    // 3) On génère un record
                     writer.write("  <record id=\"r" + i + "\">\n");
 
                     // Image
                     writer.write("    <Image");
-                    // attributs #REQUIRED dans la DTD → on les met toujours, même vides
                     writer.write(" ImageID=\"" + xmlEscape(imageID) + "\"");
                     writer.write(" ImageDir=\"" + xmlEscape(imageDir) + "\"");
                     writer.write("/>\n");
@@ -134,7 +151,6 @@ public class  XmlMaker {
                     writer.write(" PatientID=\"" + xmlEscape(patientID) + "\"");
                     writer.write(" PatientBirth=\"" + xmlEscape(patientBirth) + "\"");
                     writer.write(">\n");
-                    // Si tu voulais ajouter du texte à l'intérieur de Patient, tu peux ici
                     writer.write("    </Patient>\n");
 
                     // Projection
@@ -146,24 +162,22 @@ public class  XmlMaker {
                     // MethodProjection
                     writer.write("    <MethodProjection>" + xmlEscape(methodProj) + "</MethodProjection>\n");
 
-                    // Report (élément ANY avec attribut ReportID et optionnel Report)
+                    // Report
                     writer.write("    <Report");
                     writer.write(" ReportID=\"" + xmlEscape(reportID) + "\"");
-                    // Attribut Report est #IMPLIED → on peut le mettre seulement si non vide
                     if (!reportText.isEmpty()) {
                         writer.write(" Report=\"" + xmlEscape(reportText) + "\"");
                     }
                     writer.write(">");
-                    // tu peux aussi mettre le texte du rapport comme contenu
                     writer.write(xmlEscape(reportText));
                     writer.write("</Report>\n");
 
-                    // Label (ANY + attributs)
+                    // Label (avec sous-éléments LabelItem pour pouvoir boucler en XSLT)
                     writer.write("    <Label");
                     if (!methodLabel.isEmpty()) {
                         writer.write(" MethodLabel=\"" + xmlEscape(methodLabel) + "\"");
                     }
-                    // Labels est #REQUIRED → on le met en toutes circonstances
+                    // Labels est #REQUIRED dans la DTD → on garde l'attribut complet
                     writer.write(" Labels=\"" + xmlEscape(labels) + "\"");
                     if (!labelsLocSent.isEmpty()) {
                         writer.write(" LabelsLocalizationsBySentence=\"" + xmlEscape(labelsLocSent) + "\"");
@@ -171,16 +185,31 @@ public class  XmlMaker {
                     if (!labelCUIS.isEmpty()) {
                         writer.write(" labelCUIS=\"" + xmlEscape(labelCUIS) + "\"");
                     }
-                    writer.write("/>\n");
+                    writer.write(">\n");
 
-                    // Localizations (#PCDATA + attribut LocalizationsCUIS optionnel)
+                    // Sous-éléments LabelItem
+                    for (String item : splitList(labels)) {
+                        if (!item.isEmpty()) {
+                            writer.write("      <LabelItem>" + xmlEscape(item) + "</LabelItem>\n");
+                        }
+                    }
+
+                    writer.write("    </Label>\n");
+
+                    // Localizations (avec sous-éléments LocItem)
                     writer.write("    <Localizations");
                     if (!localizationsCUIS.isEmpty()) {
                         writer.write(" LocalizationsCUIS=\"" + xmlEscape(localizationsCUIS) + "\"");
                     }
-                    writer.write(">");
-                    writer.write(xmlEscape(localizations));
-                    writer.write("</Localizations>\n");
+                    writer.write(">\n");
+
+                    for (String loc : splitList(localizations)) {
+                        if (!loc.isEmpty()) {
+                            writer.write("      <LocItem>" + xmlEscape(loc) + "</LocItem>\n");
+                        }
+                    }
+
+                    writer.write("    </Localizations>\n");
 
                     writer.write("  </record>\n");
                 }
