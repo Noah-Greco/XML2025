@@ -15,7 +15,7 @@ public class XsltRunner {
         // Fichiers d'entrée / sortie
         File xml = new File("src/main/resources/csv.xml");
         File xslt = new File("src/main/resources/xslt.xslt");
-        File html = new File("src/main/resources/result.html");
+        File html = new File("C:/xampp/htdocs/PadChest/result.html");
 
         // Prépare la transformation
         TransformerFactory factory = TransformerFactory.newInstance();

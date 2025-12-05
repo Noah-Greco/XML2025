@@ -2,55 +2,77 @@
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-    <!-- Template principal -->
+    <!-- On génère du HTML -->
+    <xsl:output method="html" encoding="UTF-8" indent="yes"/>
+
+    <!-- Template racine -->
     <xsl:template match="/">
         <html>
             <head>
-                <title>Dataset Viewer</title>
-                <meta charset="UTF-8"/>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+                <title>PadChest - Vue patients</title>
+
+                <!-- CSS dans C:\xampp\htdocs\PadChest\Css\style.css -->
+                <link rel="stylesheet" type="text/css" href="Css/style.css"/>
+
+                <!-- JS dans C:\xampp\htdocs\PadChest\Js\patients.js -->
+                <script type="text/javascript" src="Js/script.js"></script>
             </head>
             <body>
-                <h1>Liste des enregistrements</h1>
+                <h1>Vue individuelle des patients</h1>
 
-                <table border="1" cellpadding="5" cellspacing="0">
-                    <tr>
-                        <th>ImageID</th>
-                        <th>StudyID</th>
-                        <th>PatientID</th>
-                        <th>Projection</th>
-                        <th>Labels</th>
-                        <th>Localizations</th>
-                    </tr>
+                <!-- Navigation -->
+                <div id="nav-patients">
+                    <button id="prevPatient">← Précédent</button>
+                    <span id="patientCounter"></span>
+                    <button id="nextPatient">Suivant →</button>
+                </div>
 
-                    <!-- Boucle sur les records -->
+                <!-- Conteneur des fiches patients -->
+                <div id="patients-container">
                     <xsl:for-each select="/dataset/record">
-                        <tr>
-                            <td><xsl:value-of select="Image/@ImageID"/></td>
-                            <td><xsl:value-of select="StudyID"/></td>
-                            <td><xsl:value-of select="Patient/@PatientID"/></td>
-                            <td><xsl:value-of select="Projection"/></td>
+                        <div class="patient-card">
+                            <h2>
+                                Patient ID :
+                                <xsl:text> </xsl:text>
+                                <xsl:value-of select="Patient/@PatientID"/>
+                            </h2>
 
-                            <td>
-                                <ul>
-                                    <xsl:for-each select="Label/LabelItem">
-                                        <li><xsl:value-of select="."/></li>
-                                    </xsl:for-each>
-                                </ul>
-                            </td>
+                            <p>
+                                <span class="label">Image :</span>
+                                <xsl:text> </xsl:text>
+                                <xsl:value-of select="Image/@ImageID"/>
+                            </p>
 
-                            <td>
-                                <ul>
-                                    <xsl:for-each select="Localizations/LocItem">
-                                        <li><xsl:value-of select="."/></li>
-                                    </xsl:for-each>
-                                </ul>
-                            </td>
-                        </tr>
+                            <p>
+                                <span class="label">StudyID :</span>
+                                <xsl:text> </xsl:text>
+                                <xsl:value-of select="StudyID"/>
+                            </p>
+
+                            <p>
+                                <span class="label">Projection :</span>
+                                <xsl:text> </xsl:text>
+                                <xsl:value-of select="Projection"/>
+                            </p>
+
+                            <p class="section-title">Labels :</p>
+                            <ul>
+                                <li>
+                                    <xsl:value-of select="Label/@Labels"/>
+                                </li>
+                            </ul>
+
+                            <p class="section-title">Localisations :</p>
+                            <ul>
+                                <li>
+                                    <xsl:value-of select="Localizations"/>
+                                </li>
+                            </ul>
+                        </div>
                     </xsl:for-each>
-
-                </table>
+                </div>
             </body>
         </html>
     </xsl:template>
-
 </xsl:stylesheet>
