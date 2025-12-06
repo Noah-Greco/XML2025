@@ -1,0 +1,28 @@
+let $labels :=
+  for $li in /dataset/record/Label/LabelItem
+  let $txt :=
+    lower-case(
+      normalize-space(
+        translate(string($li),
+                  "[]'""",
+                  "")
+      )
+    )
+  where $txt != ""
+  return $txt
+
+for $name in
+    subsequence(
+      for $v in distinct-values($labels)
+      let $c := count($labels[. = $v])
+      order by $c descending
+      return <label name="{$v}" count="{$c}"/>,
+      1, 10
+    )
+return $name
+
+--------
+--------
+
+count(/dataset/record[contains(Localizations, 'loc right')])
+

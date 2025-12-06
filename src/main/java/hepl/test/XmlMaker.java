@@ -37,9 +37,12 @@ public class XmlMaker {
         return data;
     }
 
-    // Échappe les caractères spéciaux XML
+    // Échappe les caractères spéciaux XML et empecher erreur taille trop longue
     private static String xmlEscape(String text) {
         if (text == null) return "";
+
+        text = text.replaceAll("\\[.*?\\]", "");
+
         return text.replace("&", "&amp;")
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")
