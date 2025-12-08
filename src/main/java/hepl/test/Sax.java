@@ -12,10 +12,10 @@ public class Sax extends DefaultHandler {
 
     public static void main(String[] args) {
         // Désactivation des limites de sécurité JAXP
-        System.setProperty("jdk.xml.maxGeneralEntitySizeLimit", "0");  // taille max d'une entité
-        System.setProperty("jdk.xml.totalEntitySizeLimit", "0");       // taille totale cumulée des entités
-        System.setProperty("jdk.xml.entityExpansionLimit", "0");       // nombre d'expansions d'entités
-        System.setProperty("jdk.xml.maxElementDepth", "0");            // profondeur max de balises
+        System.setProperty("jdk.xml.maxGeneralEntitySizeLimit", "0");
+        System.setProperty("jdk.xml.totalEntitySizeLimit", "0");
+        System.setProperty("jdk.xml.entityExpansionLimit", "0");
+        System.setProperty("jdk.xml.maxElementDepth", "0");
 
 
         String XmlFile = "src/main/resources/csv.xml";
@@ -23,45 +23,42 @@ public class Sax extends DefaultHandler {
             //Code repris du cours
             SAXParserFactory factory = SAXParserFactory.newInstance();
 
-            factory.setValidating(true);
-            factory.setNamespaceAware(true);
+            factory.setValidating(true);//Valide le doc par rapport au DTD
+            factory.setNamespaceAware(true);//Si Naspace, Sax les comprendra
 
             SAXParser sp = factory.newSAXParser();
+            //Créer le XMLReader qui permet de lire le XML et envoyer les event au Handler
             XMLReader reader = sp.getXMLReader();
 
             //Création des Handler comme demamndé dans énoncé
             LabelHandlerSax labelhandler = new LabelHandlerSax();
             ImageHandlerSax imagehandler = new ImageHandlerSax();
-            //On peut pas attacher plusieurs Handler a un seul Sax il est donc nécessaire d'utiliser un Composit
             CompositeHandler composite = new CompositeHandler();
             composite.addHandler(labelhandler);
             composite.addHandler(imagehandler);
 
-            reader.setContentHandler(composite);
+            reader.setContentHandler(composite); //envoie-les events au composite et donc au 2 autres aussi
             //Attache le SimpleErrorHandler
             reader.setErrorHandler(new SimpleErrorHandler());
-            //On parse le doc
+            //On lis le xml en entier
             reader.parse(XmlFile);
             System.out.println("[SAX] Validation terminée ! (DTD OK)");
-            // -------- Top 10 labels les plus fréquents --------
+
             System.out.println("---- Top 10 labels les plus fréquents ----");
-
+            //Recup la map des compteurs
             Map<String, Integer> counts = labelhandler.getLabelCount();
-
-            // On met les entrées de la map dans une liste
+            // Tranforme map en liste retourne string pour avoir paire clé(nom) et int pour valeur(nb occruence)
             List<Map.Entry<String, Integer>> entries = new ArrayList<>(counts.entrySet());
-
             // On trie par valeur décroissante (du plus fréquent au moins fréquent)
+            //e1 et e2 sont 2 map.entry, on compare les 2  et si e2 > e1 alors ca renvoie un int positif et echange leur place
             entries.sort((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()));
-
-            // On affiche au maximum les 10 premiers
+            // On affiche 10 premiers, entries.size est la taille de notre map, math.min renvoie le + ptit des 2 donc ici 10 max
             int limit = Math.min(10, entries.size());
             for (int i = 0; i < limit; i++) {
-                Map.Entry<String, Integer> entry = entries.get(i);
+                Map.Entry<String, Integer> entry = entries.get(i);//recup les 10
                 System.out.println((i + 1) + ". " + entry.getKey() + " : " + entry.getValue());
             }
 
-// (optionnel) affichage du nombre total de labels distincts
             System.out.println("Nombre total de labels distincts : " + counts.size());
             System.out.println("Images avec loc right = " + imagehandler.getImageCount());
 

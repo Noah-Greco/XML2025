@@ -35,7 +35,7 @@ public class LabelHandlerSax extends DefaultHandler {
 
             String label = currentText.toString().trim().toLowerCase();
 
-            // Nettoyage léger : on enlève les quotes simples/doubles
+            // on enlève les quotes simples/doubles
             label = label.replace("'", "").replace("\"", "");
             // Normalisation des espaces
             label = label.replaceAll("\\s+", " ");

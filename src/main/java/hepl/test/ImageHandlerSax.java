@@ -17,16 +17,15 @@ public class ImageHandlerSax extends DefaultHandler {
     public int getImageCount() {
         return imageCount;
     }
-//Appelées a chaque fois que SAX rencontre une balise ouvrante
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if (qName.equals("record")) { //Si balise record
+        if (qName.equals("record")) {
             inRecord = true;
             hasLocRight = false; //reset le flag pour ce record, aucun locright trouvé tq mtn
             if (DEBUG) System.out.println("→ record balise");
         }
 
-        if (qName.equals("Localizations")) { //Si balise localization
+        if (qName.equals("Localizations")) {
             inLocalization = true;
             buffer.setLength(0); //vidage buffer pour accumulé txt de cette localization
             if (DEBUG) System.out.println("→ Localizations balise");
@@ -36,10 +35,9 @@ public class ImageHandlerSax extends DefaultHandler {
     @Override
     public void characters(char[] ch, int start, int length) {
         if (inLocalization) { //si true alors on ajoute le code au buffer
-            buffer.append(ch, start, length);
+            buffer.append(ch, start, length);//buffer,index debut,taille
         }
     }
-//Appelées a chaque fois que SAX recnontre une de balise fermante
     @Override
     public void endElement(String uri, String localName, String qName) {
 

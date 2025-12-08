@@ -7,14 +7,13 @@ import java.util.List;
 public class XmlMaker {
 
     public static void main(String[] args) {
-        // Chemin vers ton CSV
-        String csvFile = "src/main/resources/csv.csv";
 
+        String csvFile = "src/main/resources/csv.csv";
         // Le nom du XML sera basé sur le nom du CSV
         String xmlFile = csvFile.replaceFirst("(?i)\\.csv$", ".xml");
 
         try {
-            List<String[]> csvData = readCsv(csvFile);
+            List<String[]> csvData = readCsv(csvFile);//Lis le csv et retourne une liste de tab content les infos
             writeXml(xmlFile, csvData);
             System.out.println("Conversion terminée avec succès !");
             System.out.println("Fichier généré : " + xmlFile);
@@ -23,51 +22,51 @@ public class XmlMaker {
         }
     }
 
-    // Lecture du CSV
     private static List<String[]> readCsv(String filename) throws IOException {
         List<String[]> data = new ArrayList<>();
         String line;
+        //lecture du fichier ligne par ligne
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             while ((line = br.readLine()) != null) {
-                // Si ton CSV a des virgules "simples" (pas de guillemets avec des virgules dedans)
+                // chaque ligne est découpé sur la virugle, on stock dans notre tableau
                 String[] values = line.split(",");
-                data.add(values);
+                data.add(values); //on ajt chaque tab dans data
             }
         }
         return data;
     }
 
-    // Échappe les caractères spéciaux XML et empecher erreur taille trop longue
     private static String xmlEscape(String text) {
-        if (text == null) return "";
+        if (text == null) return ""; //evite erreur
 
-        text = text.replaceAll("\\[.*?\\]", "");
+        text = text.replaceAll("\\[.*?\\]", "");//retire pour pb taille
 
+        //Remplace cara interdit
         return text.replace("&", "&amp;")
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")
                 .replace("\"", "&quot;")
                 .replace("'", "&apos;");
     }
-
-    // Trouve l'index d'une colonne dans les headers (insensible à la casse)
-    private static int findIndex(String[] headers, String columnName) {
+//Parcours le header et cherche la col
+    private static int findIndex(String[] headers, String columnName) { //heads = nom col , colname = col rechercher
         for (int i = 0; i < headers.length; i++) {
             if (headers[i] != null &&
-                    headers[i].trim().equalsIgnoreCase(columnName)) {
+                    headers[i].trim().equalsIgnoreCase(columnName)) {//trim retire espace par securité
                 return i;
             }
         }
         return -1; // pas trouvé
     }
 
-    // Récupère la valeur d'une cellule avec sécurité
+    // Récupère la valeur d'une cellule avec sécurité ( si col pas trouvé retourne vide si trouvé retourne la valeur)
     private static String getCell(String[] row, int idx) {
         if (idx < 0 || idx >= row.length) return "";
         return row[idx];
     }
 
-    // Découpe une chaîne de type ['a', 'b', 'c'] en morceaux individuels
+    //Permet de traiter les col ayant du txt ( label & localization)
+    // transforme qqch comme ['normal', 'cardiomegaly'] en 2 balise sous item
     private static String[] splitList(String raw) {
         if (raw == null) return new String[0];
 
@@ -97,17 +96,17 @@ public class XmlMaker {
             if (!data.isEmpty()) {
                 String[] headers = data.get(0); // première ligne = entêtes
 
-                // 1) On récupère les index des colonnes utiles (à adapter à ton CSV)
+                //  On récupère les index des colonnes utiles
                 int idxImageID                       = findIndex(headers, "ImageID");
                 int idxImageDir                      = findIndex(headers, "ImageDir");
-                int idxStudyID                       = findIndex(headers, "StudyID"); // ou "StudyID_DICOM"
+                int idxStudyID                       = findIndex(headers, "StudyID");
                 int idxPatientID                     = findIndex(headers, "PatientID");
                 int idxPatientBirth                  = findIndex(headers, "PatientBirth");
                 int idxProjection                    = findIndex(headers, "Projection");
                 int idxPediatric                     = findIndex(headers, "Pediatric");
                 int idxMethodProjection              = findIndex(headers, "MethodProjection");
                 int idxReportID                      = findIndex(headers, "ReportID");
-                int idxReportText                    = findIndex(headers, "Report"); // texte du rapport
+                int idxReportText                    = findIndex(headers, "Report");
                 int idxMethodLabel                   = findIndex(headers, "MethodLabel");
                 int idxLabels                        = findIndex(headers, "Labels");
                 int idxLabelsLocalizationsBySentence = findIndex(headers, "LabelsLocalizationsBySentence");
@@ -115,11 +114,10 @@ public class XmlMaker {
                 int idxLocalizations                 = findIndex(headers, "Localizations");
                 int idxLocalizationsCUIS             = findIndex(headers, "LocalizationsCUIS");
 
-                // 2) On parcourt les lignes de données
                 for (int i = 1; i < data.size(); i++) {
                     String[] row = data.get(i);
 
-                    // Récupération des valeurs utiles
+                    // Récupération des valeurs
                     String imageID        = getCell(row, idxImageID);
                     String imageDir       = getCell(row, idxImageDir);
                     String studyID        = getCell(row, idxStudyID);
@@ -140,32 +138,26 @@ public class XmlMaker {
                     // 3) On génère un record
                     writer.write("  <record id=\"r" + i + "\">\n");
 
-                    // Image
+
                     writer.write("    <Image");
                     writer.write(" ImageID=\"" + xmlEscape(imageID) + "\"");
                     writer.write(" ImageDir=\"" + xmlEscape(imageDir) + "\"");
                     writer.write("/>\n");
 
-                    // StudyID
                     writer.write("    <StudyID>" + xmlEscape(studyID) + "</StudyID>\n");
 
-                    // Patient
                     writer.write("    <Patient");
                     writer.write(" PatientID=\"" + xmlEscape(patientID) + "\"");
                     writer.write(" PatientBirth=\"" + xmlEscape(patientBirth) + "\"");
                     writer.write(">\n");
                     writer.write("    </Patient>\n");
 
-                    // Projection
                     writer.write("    <Projection>" + xmlEscape(projection) + "</Projection>\n");
 
-                    // Pediatric
                     writer.write("    <Pediatric>" + xmlEscape(pediatric) + "</Pediatric>\n");
 
-                    // MethodProjection
                     writer.write("    <MethodProjection>" + xmlEscape(methodProj) + "</MethodProjection>\n");
 
-                    // Report
                     writer.write("    <Report");
                     writer.write(" ReportID=\"" + xmlEscape(reportID) + "\"");
                     if (!reportText.isEmpty()) {
@@ -174,13 +166,11 @@ public class XmlMaker {
                     writer.write(">");
                     writer.write(xmlEscape(reportText));
                     writer.write("</Report>\n");
-
-                    // Label (avec sous-éléments LabelItem pour pouvoir boucler en XSLT)
                     writer.write("    <Label");
                     if (!methodLabel.isEmpty()) {
                         writer.write(" MethodLabel=\"" + xmlEscape(methodLabel) + "\"");
                     }
-                    // Labels est #REQUIRED dans la DTD → on garde l'attribut complet
+
                     writer.write(" Labels=\"" + xmlEscape(labels) + "\"");
                     if (!labelsLocSent.isEmpty()) {
                         writer.write(" LabelsLocalizationsBySentence=\"" + xmlEscape(labelsLocSent) + "\"");
@@ -199,7 +189,6 @@ public class XmlMaker {
 
                     writer.write("    </Label>\n");
 
-                    // Localizations (avec sous-éléments LocItem)
                     writer.write("    <Localizations");
                     if (!localizationsCUIS.isEmpty()) {
                         writer.write(" LocalizationsCUIS=\"" + xmlEscape(localizationsCUIS) + "\"");

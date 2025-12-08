@@ -1,17 +1,18 @@
 <!ELEMENT dataset (record+)>
         <!ATTLIST dataset
-                source CDATA #REQUIRED>
+                source CDATA #REQUIRED> <!--cdata = txt nn analysé -->
 
         <!ELEMENT record (Image ,StudyID,Patient,Projection,Pediatric,MethodProjection,Report,Label,Localizations)>
         <!ATTLIST record
                 id CDATA #REQUIRED>
 
-        <!ELEMENT Image EMPTY>
+        <!ELEMENT Image EMPTY>  <!-- Vide car tt dans sous element -->
+
         <!ATTLIST Image
                 ImageID CDATA #REQUIRED
                 ImageDir CDATA #REQUIRED>
 
-        <!ELEMENT StudyID (#PCDATA)>
+        <!ELEMENT StudyID (#PCDATA)> <!--pcdata = txt analysé par parseur avec virgule crochet etc-->
 
         <!ELEMENT Patient ANY >
         <!ATTLIST Patient

@@ -72,6 +72,22 @@
                         </div>
                     </xsl:for-each>
                 </div>
+                <hr/>
+
+                <h2>Services web BaseX</h2>
+
+                <p>
+                    <a href="http://localhost:8080/loc-right" target="_blank">
+                        Voir le nombre d’images avec la localisation « loc right »
+                    </a>
+                </p>
+
+                <p>
+                    <a href="http://localhost:8080/top-labels" target="_blank">
+                        Voir le top 10 des labels les plus fréquents
+                    </a>
+                </p>
+
             </body>
         </html>
     </xsl:template>
